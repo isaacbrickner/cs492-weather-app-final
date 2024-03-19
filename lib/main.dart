@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'themes/theme.dart';
 import 'components/location/location.dart';
 import 'package:flutter/material.dart';
 import 'models/user_location.dart';
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         builder: (_, mode, __) {
           return MaterialApp(
             title: 'CS 492 Weather App',
-            theme: ThemeData.light(),
+            theme: mainTheme,
             darkTheme: ThemeData.dark(),
             themeMode: mode,
             home: MyHomePage(title: "CS492 Weather App", notifier: _notifier),

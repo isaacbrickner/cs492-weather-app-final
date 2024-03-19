@@ -1,7 +1,9 @@
 import 'package:cs492_weather_app/models/weather_forecast.dart';
+import 'hourly_forecast_list.dart';
 import '../../models/user_location.dart';
 import 'package:flutter/material.dart';
 import '../location/location.dart';
+import 'forecast_hourly_widget.dart';
 
 class WeatherScreen extends StatefulWidget {
   final Function getLocation;
@@ -27,7 +29,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
         ? ForecastWidget(
             context: context,
             location: widget.getLocation(),
-            forecasts: widget.getForecastsHourly())
+            hourlyForecast: widget.getForecastsHourly(),
+            forecasts: widget.getForecasts())
+            
         : LocationWidget(widget: widget));
   }
 }
@@ -36,10 +40,12 @@ class ForecastWidget extends StatelessWidget {
   final UserLocation location;
   final List<WeatherForecast> forecasts;
   final BuildContext context;
+  final List<WeatherForecast> hourlyForecast;
 
   const ForecastWidget(
       {super.key,
       required this.context,
+      required this.hourlyForecast,
       required this.location,
       required this.forecasts});
 
@@ -49,7 +55,9 @@ class ForecastWidget extends StatelessWidget {
       children: [
         LocationTextWidget(location: location),
         TemperatureWidget(forecasts: forecasts),
-        DescriptionWidget(forecasts: forecasts)
+        DescriptionWidget(forecasts: forecasts),
+        HourlyForecast(location: location, hourlyForecast: hourlyForecast),
+        HourlyForecastList(forecasts: hourlyForecast),       
       ],
     );
   }
@@ -65,11 +73,28 @@ class DescriptionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String emoji = '';
+
+    // Determine which emoji to use based on the short forecast
+    if (forecasts.elementAt(0).shortForecast == 'Sunny') {
+      emoji = '☀';
+    } else if (forecasts.elementAt(0).shortForecast == 'Rainy') {
+      emoji = '🌧️';
+    } else if (forecasts.elementAt(0).shortForecast == 'Cloudy') {
+      emoji = '☁️';
+    } else if (forecasts.elementAt(0).shortForecast == 'Chance Rain Showers') {
+      emoji = '🌧️';
+    } else if (forecasts.elementAt(0).shortForecast == 'Mostly Sunny') {
+      emoji = '☀' '☁️';
+    } else if (forecasts.elementAt(0).shortForecast == 'Mostly Cloudy') {
+      emoji = '☁️';}
+      else if (forecasts.elementAt(0).shortForecast == 'Clear') {
+      emoji = '🌙';}
     return SizedBox(
       height: 25,
       width: 500,
       child: Center(
-          child: Text(forecasts.elementAt(0).shortForecast,
+          child: Text(forecasts.elementAt(0).shortForecast + emoji,
               style: Theme.of(context).textTheme.bodyMedium)),
     );
   }
@@ -110,8 +135,8 @@ class LocationTextWidget extends StatelessWidget {
       padding: const EdgeInsets.all(4.0),
       child: SizedBox(
         width: 500,
-        child: Text("${location.city}, ${location.state}, ${location.zip}",
-            style: Theme.of(context).textTheme.headlineSmall),
+        child: Center(child: Text("${location.city}, ${location.state}, ${location.zip}",
+            style: Theme.of(context).textTheme.headlineSmall), ),
       ),
     );
   }

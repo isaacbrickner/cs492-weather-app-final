@@ -4,15 +4,20 @@ import './user_location.dart';
 import 'package:http/http.dart' as http;
 
 class WeatherForecast {
+  
   final String name;
   final bool isDaytime;
+  final String startTime;
   final int temperature;
   final String windSpeed;
   final String windDirection;
   final String shortForecast;
   final String detailedForecast;
+  final String condition;
 
   const WeatherForecast({
+    required this.startTime,
+    required this.condition,
     required this.name,
     required this.isDaytime,
     required this.temperature,
@@ -26,6 +31,7 @@ class WeatherForecast {
     return switch (json) {
       {
         'name': String name,
+        'startTime': String startTime,
         'isDaytime': bool isDaytime,
         'temperature': int temperature,
         'windSpeed': String windSpeed,
@@ -34,6 +40,8 @@ class WeatherForecast {
         'detailedForecast': String detailedForecast,
       } =>
         WeatherForecast(
+          startTime: startTime,
+          condition: shortForecast,
           name: name,
           isDaytime: isDaytime,
           temperature: temperature,
